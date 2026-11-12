@@ -35,7 +35,7 @@
     struct vec2 {                                                              \
       float x_cordinate;                                                       \
       float y_cordinate;                                                       \
-    } components;                                                               \
+    } components;                                                              \
   } VEC2
 
 #define VEC3_DECLARATION(_NAME)                                                \
@@ -45,7 +45,7 @@
       float x_cordinate;                                                       \
       float y_cordinate;                                                       \
       float z_cordinate;                                                       \
-    } components;                                                             \
+    } components;                                                              \
   } VEC3
 
 #endif
