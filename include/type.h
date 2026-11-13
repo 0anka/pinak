@@ -1,6 +1,7 @@
 #ifndef TYPE_HEADER_H
 #define TYPE_HEADER_H
 
+#include <math.h>
 #include <stdint.h>
 
 #define MATRIX_4X4_LINEAR 16U
@@ -64,5 +65,9 @@ typedef union Flour_bits {
 
 extern int32_t scaler_multiply_v3(VEC3 *vec, const float scaler);
 extern int32_t scaler_multiply_v2(VEC2 *vec, const float scaler);
+extern VEC3 vec3_addition(VEC3 Augend, VEC3 Addend);
+extern VEC3 vec3_subtraction(VEC3 Minuend, VEC3 Subtraend);
+extern VEC2 vec2_addition(VEC2 Augend, VEC2 Addend);
+extern VEC2 vec2_subtraction(VEC2 Minuend, VEC2 Suntraned);
 
 #endif
