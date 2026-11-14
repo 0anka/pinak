@@ -1,37 +1,106 @@
 #include "../include/type.h"
 
-extern int32_t scaler_multiply_v3(VEC3 *vec, const float scaler) {
+#if FLOAT_IEEE754_BINARY32
+extern size_t scaler_multiply_v3_binary32(VEC3 *vec, const float scaler) {
 
   fbit conversion = {.f = scaler};
 
   if (!vec) {
-    return -1;
+    return 1;
   }
   if ((conversion.u & FLOAT_EXP_MASK) == FLOAT_EXP_MASK) {
-    return -1;
+    return 1;
   }
+
+  if ((((fbit){.f = vec->components.x_cordinate * scaler}).u &
+       FLOAT_EXP_MASK) == FLOAT_EXP_MASK ||
+      (((fbit){.f = vec->components.y_cordinate * scaler}).u &
+       FLOAT_EXP_MASK) == FLOAT_EXP_MASK ||
+      (((fbit){.f = vec->components.z_cordinate * scaler}).u &
+       FLOAT_EXP_MASK) == FLOAT_EXP_MASK) {
+    return 1;
+  }
+
   vec->components.x_cordinate *= scaler;
   vec->components.y_cordinate *= scaler;
   vec->components.z_cordinate *= scaler;
   return 0;
 }
 
-extern int32_t scaler_multiply_v2(VEC2 *vec, const float scaler) {
+extern size_t scaler_multiply_v2_binary32(VEC2 *vec, const float scaler) {
 
   fbit conversion = {.f = scaler};
 
   if (!vec) {
-    return -1;
+    return 1;
   }
   if ((conversion.u & FLOAT_EXP_MASK) == FLOAT_EXP_MASK) {
-    return -1;
+    return 1;
   }
+
+  if ((((fbit){.f = vec->components.x_cordinate * scaler}).u &
+       FLOAT_EXP_MASK) == FLOAT_EXP_MASK ||
+      (((fbit){.f = vec->components.y_cordinate * scaler}).u &
+       FLOAT_EXP_MASK) == FLOAT_EXP_MASK) {
+    return 1;
+  }
+
   vec->components.x_cordinate *= scaler;
   vec->components.y_cordinate *= scaler;
   return 0;
 }
+#endif
+
+extern size_t scaler_multiply_v3(VEC3 *vec, const float scaler) {
+  if (!vec || !isfinite(scaler)) {
+    return 1;
+  }
+  if (!isfinite(vec->components.x_cordinate * scaler) ||
+      !isfinite(vec->components.y_cordinate * scaler) ||
+      !isfinite(vec->components.z_cordinate * scaler)) {
+    return 1;
+  }
+
+  vec->components.x_cordinate *= scaler;
+  vec->components.y_cordinate *= scaler;
+  vec->components.z_cordinate *= scaler;
+
+  return 0;
+}
+
+extern size_t scaler_multiply_v2(VEC2 *vec, const float scaler) {
+  if (!vec || !isfinite(scaler)) {
+    return 1;
+  }
+  if (!isfinite(vec->components.x_cordinate * scaler) ||
+      !isfinite(vec->components.y_cordinate * scaler)) {
+    return 1;
+  }
+
+  vec->components.x_cordinate *= scaler;
+  vec->components.y_cordinate *= scaler;
+
+  return 0;
+}
 
 extern VEC3 vec3_addition(VEC3 Augend, VEC3 Addend) {
+
+  if (!isfinite(Augend.components.x_cordinate) ||
+      !isfinite(Augend.components.y_cordinate) ||
+      !isfinite(Augend.components.z_cordinate) ||
+      !isfinite(Addend.components.x_cordinate) ||
+      !isfinite(Addend.components.y_cordinate) ||
+      !isfinite(Addend.components.z_cordinate)) {
+    return (VEC3){0};
+  }
+  if (!isfinite(Augend.components.x_cordinate +
+                Addend.components.x_cordinate) ||
+      !isfinite(Augend.components.y_cordinate +
+                Addend.components.y_cordinate) ||
+      !isfinite(Augend.components.z_cordinate +
+                Addend.components.z_cordinate)) {
+    return (VEC3){0};
+  }
 
   Augend.components.x_cordinate += Addend.components.x_cordinate;
   Augend.components.y_cordinate += Addend.components.y_cordinate;
@@ -41,6 +110,23 @@ extern VEC3 vec3_addition(VEC3 Augend, VEC3 Addend) {
 }
 
 extern VEC3 vec3_subtraction(VEC3 Minuend, VEC3 Subtrahend) {
+  if (!isfinite(Minuend.components.x_cordinate) ||
+      !isfinite(Minuend.components.y_cordinate) ||
+      !isfinite(Minuend.components.z_cordinate) ||
+      !isfinite(Subtrahend.components.x_cordinate) ||
+      !isfinite(Subtrahend.components.y_cordinate) ||
+      !isfinite(Subtrahend.components.z_cordinate)) {
+    return (VEC3){0};
+  }
+
+  if (!isfinite(Minuend.components.x_cordinate -
+                Subtrahend.components.x_cordinate) ||
+      !isfinite(Minuend.components.y_cordinate -
+                Subtrahend.components.y_cordinate) ||
+      !isfinite(Minuend.components.z_cordinate -
+                Subtrahend.components.z_cordinate)) {
+    return (VEC3){0};
+  }
 
   Minuend.components.x_cordinate -= Subtrahend.components.x_cordinate;
   Minuend.components.y_cordinate -= Subtrahend.components.y_cordinate;
@@ -49,6 +135,20 @@ extern VEC3 vec3_subtraction(VEC3 Minuend, VEC3 Subtrahend) {
 }
 extern VEC2 vec2_addition(VEC2 Augend, VEC2 Addend) {
 
+  if (!isfinite(Augend.components.x_cordinate) ||
+      !isfinite(Augend.components.y_cordinate) ||
+      !isfinite(Addend.components.x_cordinate) ||
+      !isfinite(Addend.components.y_cordinate)) {
+    return (VEC2){0};
+  }
+
+  if (!isfinite(Augend.components.x_cordinate +
+                Addend.components.x_cordinate) ||
+      !isfinite(Augend.components.y_cordinate +
+                Addend.components.y_cordinate)) {
+    return (VEC2){0};
+  }
+
   Augend.components.x_cordinate += Addend.components.x_cordinate;
   Augend.components.y_cordinate += Addend.components.y_cordinate;
   return Augend;
@@ -56,7 +156,100 @@ extern VEC2 vec2_addition(VEC2 Augend, VEC2 Addend) {
 
 extern VEC2 vec2_subtraction(VEC2 Minuend, VEC2 Subtrahend) {
 
+  if (!isfinite(Minuend.components.x_cordinate) ||
+      !isfinite(Minuend.components.y_cordinate) ||
+      !isfinite(Subtrahend.components.x_cordinate) ||
+      !isfinite(Subtrahend.components.y_cordinate)) {
+    return (VEC2){0};
+  }
+
+  if (!isfinite(Minuend.components.x_cordinate -
+                Subtrahend.components.x_cordinate) ||
+      !isfinite(Minuend.components.y_cordinate -
+                Subtrahend.components.y_cordinate)) {
+    return (VEC2){0};
+  }
+
   Minuend.components.x_cordinate -= Subtrahend.components.x_cordinate;
   Minuend.components.y_cordinate -= Subtrahend.components.y_cordinate;
   return Minuend;
+}
+static int Round(const float value) {
+  if (!isfinite(value) || value > (float)INT_MAX || value < (float)INT_MIN) {
+    return 0;
+  }
+  float absolute = fabsf(value);
+  int intpart = (int)absolute;
+  if (absolute - (float)intpart >= 0.5f) {
+    ++intpart;
+  }
+  return value < 0.f ? -intpart : intpart;
+}
+
+extern float Sine(const float radians) {
+  int truncate = Round(radians * TWO_OVER_PI);
+  float interval = radians - (float)truncate * PI_OVER_TWO;
+  float sine_quadrent =
+      interval *
+      (1.0f + (interval * interval) *
+                  ((-1.0f / 6.0f +
+                    (interval * interval) *
+                        ((1.0f / 120.0f +
+                          (interval * interval) *
+                              (-1.0f / 5040.0f +
+                               (interval * interval) * (1.0f / 362880.0f)))))));
+  float cosine_quadrent =
+      1.0f +
+      (interval * interval) *
+          (-1.0f / 2.0f +
+           (interval * interval) *
+               (1.0f / 24.0f + (interval * interval) *
+                                   (-1.0f / 720.0f + (interval * interval) *
+                                                         (1.0f / 40320.0f))));
+
+  switch (truncate % 4 < 0 ? truncate % 4 + 4 : truncate % 4) {
+  case QUAD_FIRST:
+    return sine_quadrent;
+  case QUAD_SECOND:
+    return cosine_quadrent;
+  case QUAD_THIRD:
+    return -sine_quadrent;
+  case QUAD_FOURTH:
+    return -cosine_quadrent;
+  }
+  return 0.0f;
+}
+
+extern float Cos(const float radians) {
+  int truncate = Round(radians * TWO_OVER_PI);
+  float interval = radians - (float)truncate * PI_OVER_TWO;
+  float sine_quadrent =
+      interval *
+      (1.0f + (interval * interval) *
+                  ((-1.0f / 6.0f +
+                    (interval * interval) *
+                        ((1.0f / 120.0f +
+                          (interval * interval) *
+                              (-1.0f / 5040.0f +
+                               (interval * interval) * (1.0f / 362880.0f)))))));
+  float cosine_quadrent =
+      1.0f +
+      (interval * interval) *
+          (-1.0f / 2.0f +
+           (interval * interval) *
+               (1.0f / 24.0f + (interval * interval) *
+                                   (-1.0f / 720.0f + (interval * interval) *
+                                                         (1.0f / 40320.0f))));
+
+  switch (truncate % 4 < 0 ? truncate % 4 + 4 : truncate % 4) {
+  case QUAD_FIRST:
+    return cosine_quadrent;
+  case QUAD_SECOND:
+    return -sine_quadrent;
+  case QUAD_THIRD:
+    return -cosine_quadrent;
+  case QUAD_FOURTH:
+    return sine_quadrent;
+  }
+  return 0.0f;
 }
