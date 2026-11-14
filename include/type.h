@@ -106,4 +106,14 @@ static int Round(const float value);
 extern float Sine(const float radians);
 extern float Cos(const float radians);
 
+/*
+ * Norm or length of the vector
+ */
+
+extern float vec3_magnitude(const VEC3 *vec3);
+extern float vec2_magnitude(const VEC2 *vec2);
+
+extern float vec3_Dot_Product(VEC3 vec1, VEC3 vec2);
+extern float vec2_Dot_producr(VEC2 vec1, VEC2 vec2);
+
 #endif

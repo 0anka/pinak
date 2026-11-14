@@ -253,3 +253,67 @@ extern float Cos(const float radians) {
   }
   return 0.0f;
 }
+
+extern float vec3_magnitude(const VEC3 *vec3) {
+  if (!vec3) {
+    return NAN;
+  }
+
+  if (!isfinite(vec3->components.x_cordinate) ||
+      !isfinite(vec3->components.y_cordinate) ||
+      !isfinite(vec3->components.z_cordinate)) {
+    return NAN;
+  }
+
+  return hypotf(
+      hypotf(vec3->components.x_cordinate, vec3->components.y_cordinate),
+      vec3->components.z_cordinate);
+}
+
+extern float vec2_magnitude(const VEC2 *vec2) {
+  if (!vec2) {
+    return NAN;
+  }
+
+  if (!isfinite(vec2->components.x_cordinate) ||
+      !isfinite(vec2->components.y_cordinate)) {
+
+    return NAN;
+  }
+
+  return hypotf(vec2->components.x_cordinate, vec2->components.y_cordinate);
+}
+
+extern float vec3_Dot_Product(VEC3 vec1, VEC3 vec2) {
+  float add;
+  vec1.components.x_cordinate *= vec2.components.x_cordinate;
+  vec1.components.y_cordinate *= vec2.components.y_cordinate;
+  vec1.components.z_cordinate *= vec2.components.z_cordinate;
+
+  if (!isfinite(vec1.components.x_cordinate) ||
+      !isfinite(vec1.components.y_cordinate) ||
+      !isfinite(vec1.components.z_cordinate)) {
+    return NAN;
+  }
+  add = vec1.components.x_cordinate + vec1.components.y_cordinate +
+        vec1.components.z_cordinate;
+  if (!isfinite(add)) {
+    return NAN;
+  }
+
+  return add;
+}
+extern float vec2_Dot_Product(VEC2 vec1, VEC2 vec2) {
+  float add;
+  vec1.components.x_cordinate *= vec2.components.x_cordinate;
+  vec1.components.y_cordinate *= vec2.components.y_cordinate;
+  if (!isfinite(vec1.components.x_cordinate) ||
+      !isfinite(vec1.components.y_cordinate)) {
+
+    return NAN;
+  }
+
+  add = vec1.components.x_cordinate + vec1.components.y_cordinate;
+
+  return add;
+}
