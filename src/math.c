@@ -317,3 +317,59 @@ extern float vec2_Dot_Product(VEC2 vec1, VEC2 vec2) {
 
   return add;
 }
+
+extern VEC3 vec3_cross_Product(VEC3 vec1, VEC3 vec2) {
+  VEC3 product = {0};
+  VEC3 sproduct = {0};
+
+  product.components.x_cordinate =
+      vec1.components.y_cordinate * vec2.components.z_cordinate;
+  product.components.y_cordinate =
+      vec1.components.z_cordinate * vec2.components.x_cordinate;
+  product.components.z_cordinate =
+      vec1.components.x_cordinate * vec2.components.y_cordinate;
+
+  if (!isfinite(product.components.x_cordinate) ||
+      !isfinite(product.components.y_cordinate) ||
+      !isfinite(product.components.z_cordinate)) {
+    return (VEC3){0};
+  }
+
+  sproduct.components.x_cordinate =
+      vec1.components.z_cordinate * vec2.components.y_cordinate;
+  sproduct.components.y_cordinate =
+      vec1.components.x_cordinate * vec2.components.z_cordinate;
+  sproduct.components.z_cordinate =
+      vec1.components.y_cordinate * vec2.components.x_cordinate;
+
+  if (!isfinite(sproduct.components.x_cordinate) ||
+      !isfinite(sproduct.components.y_cordinate) ||
+      !isfinite(sproduct.components.z_cordinate)) {
+    return (VEC3){0};
+  }
+
+  product.components.x_cordinate -= sproduct.components.x_cordinate;
+  product.components.y_cordinate -= sproduct.components.y_cordinate;
+  product.components.z_cordinate -= sproduct.components.z_cordinate;
+
+  if (!isfinite(product.components.x_cordinate) ||
+      !isfinite(product.components.y_cordinate) ||
+      !isfinite(product.components.z_cordinate)) {
+    return (VEC3){0};
+  }
+  return product;
+}
+
+extern float vec2_cross_Product(VEC2 vec1, VEC2 vec2) {
+  float operand1, operand2;
+  operand1 = vec1.components.x_cordinate * vec2.components.y_cordinate;
+  operand2 = vec1.components.y_cordinate * vec2.components.x_cordinate;
+  if (!isfinite(operand1) || !isfinite(operand2)) {
+    return NAN;
+  }
+  operand1 -= operand2;
+  if (!isfinite(operand1)) {
+    return NAN;
+  }
+  return operand1;
+}

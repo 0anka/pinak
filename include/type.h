@@ -112,8 +112,28 @@ extern float Cos(const float radians);
 
 extern float vec3_magnitude(const VEC3 *vec3);
 extern float vec2_magnitude(const VEC2 *vec2);
-
+/*
+ * Vector can be defined in mathematical structure
+ *based on the enviroment we have like in mathematics
+ in vector space environment it defines tuples of elements
+ and order to follow the vector space axioms of like addition
+ and subratction ,similary when we talk about inner prdouct
+ we talk about vector space with angles and lenght for normed
+ vector space with notion and lenght ,matric space we define
+ distance between to elements in eucledian we can define rule
+ of geometry distance perpendicularity so depend upon the inte-
+ petation and mathematical constraint we do so
+ *
+ *
+ */
 extern float vec3_Dot_Product(VEC3 vec1, VEC3 vec2);
 extern float vec2_Dot_producr(VEC2 vec1, VEC2 vec2);
+
+extern VEC3 vec3_cross_Product(VEC3 vec1, VEC3 vec2);
+/*
+ * this vector space typle we formd under eucledian space so
+ * we the corss product of tuple of two gives us scaler
+ */
+extern float vec2_cross_Product(VEC2 vec1, VEC2 vec2);
 
 #endif
