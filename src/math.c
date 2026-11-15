@@ -373,3 +373,25 @@ extern float vec2_cross_Product(VEC2 vec1, VEC2 vec2) {
   }
   return operand1;
 }
+extern size_t matrice_create( MatriceProperty*create ){
+        size_t check;
+        if (!create || !create->row || !create->col || create->ops!=CREATE){
+                return 1;
+        }
+
+        if ( create->row > (SIZE_MAX / create->col) ){
+                return 1;
+        }   
+        check=create->row * create->col;
+
+        if (check > (SIZE_MAX / sizeof(float))){
+                 return 1;
+                 }                  
+
+        create->matptr=(float *)malloc(check * sizeof(float));
+        if (!create->matptr){
+                return 1;
+        }
+        return 0;
+}        
+        
