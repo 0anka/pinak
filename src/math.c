@@ -373,25 +373,48 @@ extern float vec2_cross_Product(VEC2 vec1, VEC2 vec2) {
   }
   return operand1;
 }
-extern size_t matrice_create( MatriceProperty*create ){
-        size_t check;
-        if (!create || !create->row || !create->col || create->ops!=CREATE){
-                return 1;
-        }
+extern size_t matrice_create(MatriceProperty *create) {
+  size_t check;
+  if (!create || !create->row || !create->col || create->ops != CREATE) {
+    return 1;
+  }
 
-        if ( create->row > (SIZE_MAX / create->col) ){
-                return 1;
-        }   
-        check=create->row * create->col;
+  if (create->row > (SIZE_MAX / create->col)) {
+    return 1;
+  }
+  check = create->row * create->col;
 
-        if (check > (SIZE_MAX / sizeof(float))){
-                 return 1;
-                 }                  
+  if (check > (SIZE_MAX / sizeof(float))) {
+    return 1;
+  }
 
-        create->matptr=(float *)malloc(check * sizeof(float));
-        if (!create->matptr){
-                return 1;
-        }
-        return 0;
-}        
-        
+  create->matptr = (float *)malloc(check * sizeof(float));
+  if (!create->matptr) {
+    return 1;
+  }
+  return 0;
+}
+
+extern size_t Transpose_matrix(MatriceProperty *operation) {
+  float *transpose = NULL;
+  if (!operation || !operation->matptr || operation->ops != TRANSPOSE) {
+    return 1;
+  }
+  transpose =
+      (float *)malloc((operation->row * operation->col) * sizeof(float));
+  if (!transpose) {
+    return 1;
+  }
+
+  for (size_t i = 0; i < operation->row * operation->col; i++) {
+
+    transpose[(i % operation->col) * (operation->row) + (i / operation->col)] =
+        operation->matptr[(i / operation->col) * (operation->col) +
+                          (i % operation->col)];
+  }
+
+  memcpy(operation->matptr, transpose,
+         (operation->row * operation->col) * sizeof(float));
+  free(transpose);
+  return 0;
+}

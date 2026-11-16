@@ -7,7 +7,7 @@
 #include <stddef.h>
 #include <stdint.h>
 #include <stdlib.h>
-
+#include <string.h>
 #define MATRIX_4X4_LINEAR 16U
 #define FLOAT_EXP_MASK 0x7F800000U
 
@@ -85,27 +85,27 @@ extern size_t scaler_multiply_v2_binary32(VEC2 *vec, const float scaler);
 #endif
 
 enum MATRICES_OPERATION {
-        CREATE,
-        ADDITION,
-        SUBTRACTION,
-        MULTIPLICATION,
-        TRANSPOSE,
-        SCALER_MULTIPLICATION,
-        DETERMINANTS,
-        INVERSE,
-        TRACE,
-        RANK,
-        ADJOINT,
-        EIGEN_VALUES,
-        EIGEN_VECTORS,
-        DIAGONALIZATION
+  CREATE,
+  ADDITION,
+  SUBTRACTION,
+  MULTIPLICATION,
+  TRANSPOSE,
+  SCALER_MULTIPLICATION,
+  DETERMINANTS,
+  INVERSE,
+  TRACE,
+  RANK,
+  ADJOINT,
+  EIGEN_VALUES,
+  EIGEN_VECTORS,
+  DIAGONALIZATION
 };
 typedef struct matrices {
-        size_t row;
-        size_t col;
-        float *matptr;
-        enum MATRICES_OPERATION ops;
-}MatriceProperty;
+  size_t row;
+  size_t col;
+  float *matptr;
+  enum MATRICES_OPERATION ops;
+} MatriceProperty;
 
 extern size_t scaler_multiply_v3(VEC3 *vec, const float scaler);
 extern size_t scaler_multiply_v2(VEC2 *vec, const float scaler);
@@ -160,7 +160,7 @@ extern VEC3 vec3_cross_Product(VEC3 vec1, VEC3 vec2);
  * we the corss product of tuple of two gives us scaler
  */
 extern float vec2_cross_Product(VEC2 vec1, VEC2 vec2);
-extern size_t matrice_create( MatriceProperty*create );
-
+extern size_t matrice_create(MatriceProperty *create);
+extern size_t Transpose_matrix(MatriceProperty *operation);
 
 #endif
