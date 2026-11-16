@@ -418,3 +418,29 @@ extern size_t Transpose_matrix(MatriceProperty *operation) {
   free(transpose);
   return 0;
 }
+extern size_t scaler_multiplication_matrice(MatriceProperty *scaler,
+                                            const float mul) {
+  if (!scaler || !scaler->matptr || scaler->ops != SCALER_MULTIPLICATION) {
+    return 1;
+  }
+  for (size_t i = 0; i < (scaler->row * scaler->col); i++) {
+    scaler->matptr[i] *= mul;
+  }
+  return 0;
+}
+extern size_t Identity_matrix(MatriceProperty *identity) {
+  if (!identity || !identity->matptr || identity->col != identity->row ||
+      identity->ops != IDENTITY) {
+    return 1;
+  }
+  memset(identity->matptr, 0, (identity->row * identity->col) * sizeof(float));
+  for (size_t i = 0; i < (identity->row * identity->col); i++) {
+    if ((i / identity->col) == (i % identity->col)) {
+      identity->matptr[(i / identity->col) * (identity->col) +
+                       (i % identity->col)] = 1;
+    }
+  }
+  return 0;
+}
+
+
