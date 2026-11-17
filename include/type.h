@@ -98,6 +98,7 @@ enum MATRICES_OPERATION {
   ADJOINT,
   EIGEN_VALUES,
   EIGEN_VECTORS,
+  IDENTITY,
   DIAGONALIZATION
 };
 typedef struct matrices {
@@ -162,5 +163,12 @@ extern VEC3 vec3_cross_Product(VEC3 vec1, VEC3 vec2);
 extern float vec2_cross_Product(VEC2 vec1, VEC2 vec2);
 extern size_t matrice_create(MatriceProperty *create);
 extern size_t Transpose_matrix(MatriceProperty *operation);
-
+extern size_t scaler_multiplication_matrice(MatriceProperty *scaler,
+                                            const float mul);
+extern size_t Identity_matrix(MatriceProperty *identity);
+/*this function gives Augend as addition of two matrices
+ */
+extern size_t matrice_addition(MatriceProperty *Augend,
+                               MatriceProperty *Addend);
+extern float * matrice_multiplication ( MatriceProperty * multiplier , MatriceProperty * multiplicand );
 #endif

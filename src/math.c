@@ -411,6 +411,11 @@ extern size_t Transpose_matrix(MatriceProperty *operation) {
     transpose[(i % operation->col) * (operation->row) + (i / operation->col)] =
         operation->matptr[(i / operation->col) * (operation->col) +
                           (i % operation->col)];
+    if (!isfinite(transpose[(i % operation->col) * (operation->row) +
+                            (i / operation->col)])) {
+      free(transpose);
+    }
+    return 1;
   }
 
   memcpy(operation->matptr, transpose,
@@ -425,6 +430,9 @@ extern size_t scaler_multiplication_matrice(MatriceProperty *scaler,
   }
   for (size_t i = 0; i < (scaler->row * scaler->col); i++) {
     scaler->matptr[i] *= mul;
+    if (!isfinite(scaler->matptr[i])) {
+      return 1;
+    }
   }
   return 0;
 }
@@ -437,10 +445,59 @@ extern size_t Identity_matrix(MatriceProperty *identity) {
   for (size_t i = 0; i < (identity->row * identity->col); i++) {
     if ((i / identity->col) == (i % identity->col)) {
       identity->matptr[(i / identity->col) * (identity->col) +
-                       (i % identity->col)] = 1;
+                       (i % identity->col)] = 1.0f;
     }
   }
   return 0;
 }
 
+extern size_t matrice_addition(MatriceProperty *Augend,
+                               MatriceProperty *Addend) {
+  if (!Augend || !Addend || !Augend->matptr || !Addend->matptr ||
+      Augend->col != Addend->col || Augend->row != Addend->row ||
+      Augend->ops != ADDITION || Addend->ops != ADDITION) {
+    return 1;
+  }
+  for (size_t i = 0; i < (Augend->row * Addend->col); i++) {
 
+    Augend->matptr[(i / Augend->col) * (Augend->col) + (i % Augend->col)] +=
+        Addend->matptr[(i / Addend->col) * (Addend->col) + (i % Addend->col)];
+
+    if (!isfinite(Augend->matptr[(i / Augend->col) * (Augend->col) +
+                                 (i % Augend->col)])) {
+      return 1;
+    }
+  }
+  return 0;
+}
+
+extern float *matrice_multiplication(MatriceProperty *multiplier,
+                                     MatriceProperty *multiplicand) {
+  float sum = 0.0f;
+  if (!multiplier || !multiplicand || !multiplier->matptr ||
+      !multiplicand->matptr || multiplier->ops != MULTIPLICATION ||
+      multiplicand->ops != MULTIPLICATION ||
+      multiplier->col != multiplicand->row) {
+    return NULL;
+  }
+  MatriceProperty Product = {.row = multiplier->row,
+                             .col = multiplicand->col,
+                             .matptr = NULL,
+                             .ops = CREATE};
+
+  if (matrice_create(&Product)) {
+    return NULL;
+  }
+  for (size_t i = 0; i < (Product.row * Product.col); i++) {
+    sum = 0;
+
+    for (size_t j = 0; j < multiplier->col; j++) {
+      sum += (multiplier->matptr[(i / Product.col) * multiplier->col + j]) *
+             (multiplicand->matptr[j * multiplicand->col + (i % Product.col)]);
+    }
+
+    Product.matptr[i] = sum;
+       
+  }
+  return Product.matptr;
+}
