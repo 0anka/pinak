@@ -538,8 +538,8 @@ extern float *Augmented_Matrix_GJ_Elemination(MatriceProperty *nh) {
         find = k;
       }
     }
-    if( absolute < PIVOT_DIV_CHECK ){
-            continue;
+    if (absolute < PIVOT_DIV_CHECK) {
+      continue;
     }
     if (find != row) {
 

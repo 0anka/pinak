@@ -172,7 +172,8 @@ extern size_t Identity_matrix(MatriceProperty *identity);
  */
 extern size_t matrice_addition(MatriceProperty *Augend,
                                MatriceProperty *Addend);
-extern float * matrice_multiplication ( MatriceProperty * multiplier , MatriceProperty * multiplicand );
-extern size_t AugmentedMatrice(  MatriceProperty * Augmented );
-extern float * Augmented_Matrix_GJ_Elemination(MatriceProperty *nh); 
+extern float *matrice_multiplication(MatriceProperty *multiplier,
+                                     MatriceProperty *multiplicand);
+extern size_t AugmentedMatrice(MatriceProperty *Augmented);
+extern float *Augmented_Matrix_GJ_Elemination(MatriceProperty *nh);
 #endif
