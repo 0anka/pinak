@@ -497,7 +497,73 @@ extern float *matrice_multiplication(MatriceProperty *multiplier,
     }
 
     Product.matptr[i] = sum;
-       
   }
   return Product.matptr;
+}
+extern size_t AugmentedMatrice(MatriceProperty *Augmented) {
+  if (!Augmented || Augmented->col != Augmented->row) {
+    return 1;
+  }
+  Augmented->col += 1;
+  if (matrice_create(Augmented)) {
+    return 1;
+  }
+  return 0;
+}
+
+extern float *Augmented_Matrix_GJ_Elemination(MatriceProperty *nh) {
+  if (!nh || nh->row != nh->col || nh->ops != LINIEAR_SYSTEM) {
+    return NULL;
+  }
+
+  if ((AugmentedMatrice(nh))) {
+    return NULL;
+  }
+  size_t row = 0;
+  size_t col = 0;
+  size_t find = row;
+  float absolute;
+  float com;
+  for (; col < nh->col - 1; col++) {
+    if (row == nh->row) {
+      break;
+    }
+
+    find = 0;
+    absolute = 0;
+    for (size_t k = row; k < nh->row; k++) {
+      com = nh->matptr[(k * nh->col) + col];
+      if (fabsf(com) > absolute) {
+        absolute = fabsf(com);
+        find = k;
+      }
+    }
+    if( absolute < PIVOT_DIV_CHECK ){
+            continue;
+    }
+    if (find != row) {
+
+      for (size_t p = 0; p < nh->col; p++) {
+        float temp = nh->matptr[find * nh->col + p];
+        nh->matptr[find * nh->col + p] = nh->matptr[row * nh->col + p];
+        nh->matptr[row * nh->col + p] = temp;
+      }
+    }
+    float pivot = nh->matptr[row * nh->col + col];
+    for (size_t p = 0; p < nh->col; p++) {
+      nh->matptr[row * nh->col + p] /= pivot;
+    }
+
+    for (size_t p = 0; p < nh->row; p++) {
+      if (p != row) {
+        float factor = nh->matptr[p * nh->col + col];
+        for (size_t z = 0; z < nh->col; z++) {
+
+          nh->matptr[p * nh->col + z] -= factor * nh->matptr[row * nh->col + z];
+        }
+      }
+    }
+    row++;
+  }
+  return nh->matptr;
 }

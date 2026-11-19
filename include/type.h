@@ -13,6 +13,7 @@
 
 #define TWO_OVER_PI 0x1.45f306p-1f
 #define PI_OVER_TWO 0x1.921fb6p+0f
+#define PIVOT_DIV_CHECK 0x1.ad7f2ap-24f
 
 #define QUAD_FIRST 0x00U
 #define QUAD_SECOND 0x01U
@@ -94,6 +95,7 @@ enum MATRICES_OPERATION {
   DETERMINANTS,
   INVERSE,
   TRACE,
+  LINIEAR_SYSTEM,
   RANK,
   ADJOINT,
   EIGEN_VALUES,
@@ -171,4 +173,6 @@ extern size_t Identity_matrix(MatriceProperty *identity);
 extern size_t matrice_addition(MatriceProperty *Augend,
                                MatriceProperty *Addend);
 extern float * matrice_multiplication ( MatriceProperty * multiplier , MatriceProperty * multiplicand );
+extern size_t AugmentedMatrice(  MatriceProperty * Augmented );
+extern float * Augmented_Matrix_GJ_Elemination(MatriceProperty *nh); 
 #endif
