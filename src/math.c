@@ -567,3 +567,76 @@ extern float *Augmented_Matrix_GJ_Elemination(MatriceProperty *nh) {
   }
   return nh->matptr;
 }
+extern float * Matrice_inverse( MatriceProperty * matrice ) {
+        if ( !matrice || matrice->row!=2*matrice->col || matrice->ops!=INVERSE ){
+                return NULL;
+        }
+        if ((AugmentedMatrice(matrice))) {
+                return NULL;
+        }
+        for ( size_t i=0 ; i < matrice->col*matrice->row ; i++ ){
+                if ( i / matrice->col == i % matrice->col ){
+                        matrice->matptr[i/matrice->col * (2 * matrice->col ) + (i % matrice->col)] = 1.0f;
+                }
+        }
+                               
+  size_t row = 0;
+    size_t col = 0;
+    size_t find = row;
+    float absolute;
+    float com;
+
+    for (; col < matrice->col / 2; col++) {
+        if (row == matrice->row) {
+            break;
+        }
+
+        find = 0;
+        absolute = 0;
+
+        for (size_t k = row; k < matrice->row; k++) {
+            com = matrice->matptr[k * matrice->col + col];
+
+            if (fabsf(com) > absolute) {
+                absolute = fabsf(com);
+                find = k;
+            }
+        }
+
+        if (absolute < PIVOT_DIV_CHECK) {
+            continue;
+        }
+
+        if (find != row) {
+            for (size_t p = 0; p < matrice->col; p++) {
+                float temp = matrice->matptr[find * matrice->col + p];
+
+                matrice->matptr[find * matrice->col + p] =
+                    matrice->matptr[row * matrice->col + p];
+
+                matrice->matptr[row * matrice->col + p] = temp;
+            }
+        }
+
+        float pivot = matrice->matptr[row * matrice->col + col];
+
+        for (size_t p = 0; p < matrice->col; p++) {
+            matrice->matptr[row * matrice->col + p] /= pivot;
+        }
+
+        for (size_t p = 0; p < matrice->row; p++) {
+            if (p != row) {
+                float factor = matrice->matptr[p * matrice->col + col];
+
+                for (size_t z = 0; z < matrice->col; z++) {
+                    matrice->matptr[p * matrice->col + z] -=
+                        factor * matrice->matptr[row * matrice->col + z];
+                }
+            }
+        }
+
+        row++;
+    
+     }
+    return matrice->matptr;
+}
