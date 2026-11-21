@@ -529,7 +529,7 @@ extern float *Augmented_Matrix_GJ_Elemination(MatriceProperty *nh) {
       break;
     }
 
-    find = 0;
+    find = row;
     absolute = 0;
     for (size_t k = row; k < nh->row; k++) {
       com = nh->matptr[(k * nh->col) + col];
@@ -639,4 +639,71 @@ extern float * Matrice_inverse( MatriceProperty * matrice ) {
     
      }
     return matrice->matptr;
+}
+
+extern float determinant_calculation(MatriceProperty *nh) {
+  if (!nh || nh->row != nh->col || nh->ops != LINIEAR_SYSTEM) {
+    return 0.0f;
+  }
+  float * mat  = malloc ( (nh->row * nh->col)*sizeof(float));
+  if (!mat){
+          return 0.0f;
+  }
+  memcpy(mat,nh->matptr,(nh->row*nh->col)*sizeof(float));
+
+  size_t row = 0;
+  size_t col = 0;
+  size_t find = row;
+  float absolute;
+  float com;
+  float det = 1.0f;
+  int sign=1;
+  for (; col < nh->col ; col++) {
+    if (row == nh->row) {
+      break;
+    }
+
+    find = row;
+    absolute = 0;
+    for (size_t k = row; k < nh->row; k++) {
+      com = mat[(k * nh->col) + col];
+      if (fabsf(com) > absolute) {
+        absolute = fabsf(com);
+        find = k;
+      }
+    }
+    if (absolute < PIVOT_DIV_CHECK) {
+       det=0.0f;
+       break;
+    }
+    if (find != row) {
+
+      for (size_t p = 0; p < nh->col; p++) {
+        float temp = mat[find * nh->col + p];
+        mat[find * nh->col + p] = mat[row * nh->col + p];
+        mat[row * nh->col + p] = temp;
+        
+      }
+      sign=-sign;
+    }
+    float pivot = mat[row * nh->col + col];
+    det*=pivot;
+    for (size_t p = 0; p < nh->col; p++) {
+      mat[row * nh->col + p] /= pivot;
+    }
+
+    for (size_t p = 0; p < nh->row; p++) {
+      if (p != row) {
+        float factor = mat[p * nh->col + col];
+        for (size_t z = 0; z < nh->col; z++) {
+
+          mat[p * nh->col + z] -= factor * mat[row * nh->col + z];
+        }
+      }
+    }
+    row++;
+  }
+  det*=sign;
+  free(mat);
+  return det;
 }

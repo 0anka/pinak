@@ -177,4 +177,5 @@ extern float *matrice_multiplication(MatriceProperty *multiplier,
 extern size_t AugmentedMatrice(MatriceProperty *Augmented);
 extern float *Augmented_Matrix_GJ_Elemination(MatriceProperty *nh);
 extern float * Matrice_inverse( MatriceProperty * matrice ); 
+float determinant_calculation(MatriceProperty *nh);
 #endif
